@@ -13,11 +13,11 @@ import javax.inject.Inject;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class BankAccountService {
-    private final Repository<Long, BankAccount> bankAccountRepository;
+    private final Repository<String, BankAccount> bankAccountRepository;
     private final AccountTransactionValidationEngine validationEngine;
 
     @Inject
-    public BankAccountService(Repository<Long, BankAccount> bankAccountRepository, AccountTransactionValidationEngine validationEngine) {
+    public BankAccountService(Repository<String, BankAccount> bankAccountRepository, AccountTransactionValidationEngine validationEngine) {
         this.bankAccountRepository = bankAccountRepository;
         this.validationEngine = validationEngine;
     }
@@ -26,7 +26,7 @@ public class BankAccountService {
         return bankAccountRepository.add();
     }
 
-    public BankAccount getAccount(Long accountId) throws BankAccountNotAvailableException {
+    public BankAccount getAccount(String accountId) throws BankAccountNotAvailableException {
         checkNotNull(accountId, "Invalid accountId");
         Optional<BankAccount> maybeAccount = bankAccountRepository.find(accountId);
         if (maybeAccount.isPresent()) {
@@ -35,7 +35,7 @@ public class BankAccountService {
         throw new BankAccountNotAvailableException("accountId not found");
     }
 
-    public BankAccount appendTransaction(Long accountId, Transaction t) throws BankAccountTransactionValidationException, BankAccountNotAvailableException {
+    public BankAccount appendTransaction(String accountId, Transaction t) throws BankAccountTransactionValidationException, BankAccountNotAvailableException {
         checkNotNull(t, "Invalid transaction");
         BankAccount account = getAccount(accountId);
         validationEngine.validate(account, t);
@@ -43,7 +43,13 @@ public class BankAccountService {
     }
 
     private BankAccount persistTransaction(BankAccount a, Transaction t) {
-        ImmutableList<Transaction> appendedTransaction = ImmutableList.<Transaction>builder().addAll(a.transactions()).add(t).build();
-        return bankAccountRepository.update(BankAccount.createWithTransactions(a.accountId(), appendedTransaction));
+        ImmutableList<Transaction> appendedTransaction = ImmutableList.<Transaction>builder()
+                .addAll(a.getTransactions())
+                .add(t)
+                .build();
+        return bankAccountRepository.update(BankAccount.builder()
+                .withAccountId(a.getAccountId())
+                .withTransactions(appendedTransaction)
+                .build());
     }
 }

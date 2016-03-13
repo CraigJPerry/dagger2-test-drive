@@ -32,13 +32,13 @@ public class BankAccountServiceIT {
     public void accountsCanBeRetrievedById() throws Exception {
         BankAccount bankAccount = bankAccountService.openNewAccount();
 
-        assertThat(bankAccountRepository.find(bankAccount.accountId()).get())
+        assertThat(bankAccountRepository.find(bankAccount.getAccountId()).get())
                 .isEqualTo(bankAccount);
     }
 
     @Test(expected = BankAccountNotAvailableException.class)
     public void absentAccountRaisesException() throws Exception {
-        bankAccountService.getAccount(1L);
+        bankAccountService.getAccount("1");
     }
 
     @Test(expected = NullPointerException.class)

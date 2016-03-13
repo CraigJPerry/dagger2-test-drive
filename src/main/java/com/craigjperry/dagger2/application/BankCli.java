@@ -38,10 +38,10 @@ public class BankCli {
 
     private void goNuts() throws BankAccountTransactionValidationException, BankAccountNotAvailableException {
         BankAccount bankAccount = bankAccountService.openNewAccount();
-        Transaction add10 = Transaction.builder().withDestinationAccountCode(bankAccount.accountId().toString()).withAmount(10L).build();
-        bankAccountService.appendTransaction(bankAccount.accountId(), add10);
+        Transaction add10 = Transaction.builder().withDestinationAccountCode(bankAccount.getAccountId()).withAmount(10L).build();
+        bankAccountService.appendTransaction(bankAccount.getAccountId(), add10);
         System.out.println(bankAccount);
-        bankAccount = bankAccountService.getAccount(bankAccount.accountId());
+        bankAccount = bankAccountService.getAccount(bankAccount.getAccountId());
         System.out.println(bankAccount);
     }
 

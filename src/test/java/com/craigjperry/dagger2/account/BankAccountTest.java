@@ -8,34 +8,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BankAccountTest {
 
-    public static BankAccount emptyBankAccountFixture() {
-        return BankAccount.create(1L);
-    }
-
-    public static BankAccount bankAccountFixture(Long accountId, ImmutableList<Transaction> transactions) {
-        return BankAccount.createWithTransactions(accountId, transactions);
-    }
-
     @Test
     public void bankAccountsHaveAZeroOpeningBalance() throws Exception {
-        BankAccount bankAccount = BankAccount.create(1234L);
+        BankAccount bankAccount = BankAccount.builder()
+                .withAccountId("1234")
+                .withTransactions(ImmutableList.<Transaction>of())
+                .build();
         assertThat(bankAccount.getBalance()).isEqualTo(0L);
     }
 
     @Test
     public void transactionsAreCumulative() throws Exception {
         ImmutableList<Transaction> transactions = ImmutableList.of(
-                Transaction.builder().withDestinationAccountCode("1234").withAmount(10L).build(),
-                Transaction.builder().withDestinationAccountCode("1234").withAmount(-7L).build()
+                Transaction.builder()
+                        .withDestinationAccountCode("1234")
+                        .withAmount(10L)
+                        .build(),
+                Transaction.builder()
+                        .withDestinationAccountCode("1234")
+                        .withAmount(-7L)
+                        .build()
         );
-        BankAccount account = BankAccount.createWithTransactions(1234L, transactions);
+        BankAccount account = BankAccount.builder()
+                .withAccountId("1234")
+                .withTransactions(transactions)
+                .build();
 
         assertThat(account.getBalance()).isEqualTo(3);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void negativeAccountIdsAreNotPermitted() throws Exception {
-        BankAccount.create(-1L);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -43,6 +42,8 @@ public class BankAccountTest {
         ImmutableList<Transaction> transactions = ImmutableList.of(
                 Transaction.builder().withDestinationAccountCode("1234").withAmount(10L).build()
         );
-        BankAccount.createWithTransactions(9999L, transactions);
+        BankAccount.builder()
+                .withAccountId("9999")
+                .withTransactions(transactions);
     }
 }

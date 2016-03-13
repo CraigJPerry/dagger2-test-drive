@@ -21,26 +21,29 @@ public class InMemoryBankAccountRepositoryTest {
     public void bankAccountsAreSavedOnCreation() throws Exception {
         BankAccount account = bankAccountRepository.add();
 
-        assertThat(bankAccountRepository.find(account.accountId()).get())
+        assertThat(bankAccountRepository.find(account.getAccountId()).get())
                 .isEqualTo(account);
     }
 
     @Test
     public void nonExistantAccountsReturnAnAbsentOptional() throws Exception {
-        assertThat(bankAccountRepository.find(1L))
+        assertThat(bankAccountRepository.find("1"))
                 .isEqualTo(Optional.<BankAccount>absent());
     }
 
     @Test
     public void findReturnsTheLatestVersionOfAnUpdatedAccount() throws Exception {
         BankAccount v1 = bankAccountRepository.add();
-        Transaction t = Transaction.builder().withDestinationAccountCode(v1.accountId().toString()).withAmount(100L).build();
-        ImmutableList<Transaction> newTransactions = ImmutableList.<Transaction>builder().addAll(v1.transactions()).add(t).build();
-        BankAccount v2 = BankAccount.createWithTransactions(v1.accountId(), newTransactions);
+        Transaction t = Transaction.builder().withDestinationAccountCode(v1.getAccountId()).withAmount(100L).build();
+        ImmutableList<Transaction> newTransactions = ImmutableList.<Transaction>builder()
+                .addAll(v1.getTransactions()).add(t).build();
+        BankAccount v2 = BankAccount.builder()
+                .withAccountId(v1.getAccountId())
+                .withTransactions(newTransactions).build();
 
         bankAccountRepository.update(v2);
 
-        assertThat(bankAccountRepository.find(v1.accountId()).get())
+        assertThat(bankAccountRepository.find(v1.getAccountId()).get())
                 .isEqualTo(v2).isNotEqualTo(v1);
     }
 
@@ -50,7 +53,7 @@ public class InMemoryBankAccountRepositoryTest {
         bankAccountRepository.add();
         bankAccountRepository.add();
 
-        bankAccountRepository.delete(a.accountId());
+        bankAccountRepository.delete(a.getAccountId());
 
         assertThat(bankAccountRepository.findAll())
                 .doesNotContain(a);

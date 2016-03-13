@@ -11,7 +11,7 @@ import static com.craigjperry.dagger2.account.validator.rules.SufficientFundsRul
 @Module
 class AccountModule {
     @Provides
-    static Repository<Long, BankAccount> provideBankAccountRepository() {
+    static Repository<String, BankAccount> provideBankAccountRepository() {
         return new InMemoryBankAccountRepository();
     }
 

@@ -31,7 +31,7 @@ public class TransactionProcessorSteps {
         for (BankAccountRow row : rows) {
             BankAccount bankAccount = bankAccountService.openNewAccount();
             bankAccountService.appendTransaction(
-                    bankAccount.accountId(),
+                    bankAccount.getAccountId(),
                     Transaction.builder()
                             .withDestinationAccountCode(row.accountId.toString())
                             .withAmount(row.balance)
@@ -50,7 +50,7 @@ public class TransactionProcessorSteps {
     public void aQueueOfInboundTransactions(List<TransactionRow> rows) throws Throwable {
         for (TransactionRow row : rows) {
             bankAccountService.appendTransaction(
-                    row.account,
+                    row.account.toString(),
                     Transaction.builder()
                             .withDestinationAccountCode(row.account.toString())
                             .withAmount(row.amount)
@@ -67,7 +67,7 @@ public class TransactionProcessorSteps {
     @And("^bank account balances are$")
     public void bankAccountBalancesAre(List<BankAccountRow> rows) throws Throwable {
         for (BankAccountRow row : rows) {
-            BankAccount account = bankAccountService.getAccount(row.accountId);
+            BankAccount account = bankAccountService.getAccount(row.accountId.toString());
             assertThat(account.getBalance())
                     .isEqualTo(row.balance);
         }

@@ -2,6 +2,8 @@ package com.craigjperry.dagger2.entities;
 
 import java.util.Objects;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public final class Transaction {
 
     private final Long amount;
@@ -11,8 +13,9 @@ public final class Transaction {
     // If you add a new field, just delete the below & regen it all
 
     private Transaction(Long amount, String destinationAccountCode) {
-        this.amount = amount;
-        this.destinationAccountCode = destinationAccountCode;
+        this.amount = checkNotNull(amount, "Null Transaction amount not permitted");
+        this.destinationAccountCode = checkNotNull(destinationAccountCode,
+                "Null Transaction destination account code not permitted");
     }
 
     public Long getAmount() {

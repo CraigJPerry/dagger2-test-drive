@@ -14,7 +14,7 @@ public class MatchingDestinationRule implements AccountTransactionValidationRule
 
     @Override
     public void validate(BankAccount a, Transaction t) throws BankAccountTransactionValidationException {
-        if (a.accountId().equals(Long.valueOf(t.getDestinationAccountCode()))) {
+        if (a.getAccountId().equals(t.getDestinationAccountCode())) {
             return;
         }
         throw new BankAccountTransactionValidationException("Rejecting transaction [%s] not destined for account [%s]", t, a);

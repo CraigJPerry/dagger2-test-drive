@@ -1,34 +1,85 @@
 package com.craigjperry.dagger2.account;
 
 import com.craigjperry.dagger2.entities.Transaction;
-import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
-import static com.google.common.base.Preconditions.*;
+import java.util.Objects;
 
-@AutoValue
-public abstract class BankAccount {
-    Optional<Long> cachedBalance = Optional.absent();
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
-    static BankAccount create(Long accountId) {
-        checkArgument(accountId > 0L, "Negative accountId [%s] not permitted", accountId);
-        return new AutoValue_BankAccount(accountId, ImmutableList.<Transaction>of());
+public class BankAccount {
+    private final String accountId;
+    private final ImmutableList<Transaction> transactions;
+    private Optional<Long> cachedBalance;
+
+    private BankAccount(String accountId, ImmutableList<Transaction> transactions) {
+        this.accountId = checkNotNull(accountId, "Null BankAccount accountId not permitted");
+        this.transactions = checkNotNull(transactions, "Null BankAccount transactions not permitted");
+        cachedBalance = Optional.absent();
     }
 
-    static BankAccount createWithTransactions(Long accountId, ImmutableList<Transaction> transactions) {
-        checkArgument(accountId > 0L, "Negative accountId [%s] not permitted", accountId);
-        checkNotNull(transactions, "Invalid transactions list");
-        for (Transaction transaction : transactions) {
-            checkState(accountId.equals(Long.valueOf(transaction.getDestinationAccountCode())),
-                    "Invalid transaction [%s] doesn't belong to this account [%s]", transaction, accountId);
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public ImmutableList<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String accountId;
+        private ImmutableList<Transaction> transactions;
+
+        private Builder() {
         }
-        return new AutoValue_BankAccount(accountId, transactions);
+
+        public Builder withAccountId(String accountId) {
+            this.accountId = accountId;
+            return this;
+        }
+
+        public Builder withTransactions(ImmutableList<Transaction> transactions) {
+            for (Transaction transaction : transactions) {
+                checkState(accountId.equals(transaction.getDestinationAccountCode()),
+                        "Invalid transaction [%s] doesn't belong to this account [%s]",
+                        transaction, accountId);
+            }
+            this.transactions = transactions;
+            return this;
+        }
+
+        public BankAccount build() {
+            return new BankAccount(checkNotNull(accountId), transactions);
+        }
     }
 
-    public abstract Long accountId();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BankAccount that = (BankAccount) o;
+        return Objects.equals(accountId, that.accountId) &&
+                Objects.equals(transactions, that.transactions);
+    }
 
-    public abstract ImmutableList<Transaction> transactions();
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountId, transactions);
+    }
+
+    @Override
+    public String toString() {
+        return "BankAccount{" +
+                "accountId='" + accountId + '\'' +
+                ", transactions=" + transactions +
+                '}';
+    }
 
     public Long getBalance() {
         if (!cachedBalance.isPresent()) {
@@ -39,7 +90,7 @@ public abstract class BankAccount {
 
     private long sumTotal() {
         long total = 0;
-        for (Transaction transaction : transactions()) {
+        for (Transaction transaction : getTransactions()) {
             total += transaction.getAmount();
         }
         return total;

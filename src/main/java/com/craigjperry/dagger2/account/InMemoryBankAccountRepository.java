@@ -1,7 +1,9 @@
 package com.craigjperry.dagger2.account;
 
 import com.craigjperry.dagger2.datastorage.Repository;
+import com.craigjperry.dagger2.entities.Transaction;
 import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
 
 import java.util.Collection;
 import java.util.Map;
@@ -9,9 +11,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static com.google.common.collect.Maps.newHashMap;
 
-final class InMemoryBankAccountRepository implements Repository<Long, BankAccount> {
+final class InMemoryBankAccountRepository implements Repository<String, BankAccount> {
     private AtomicLong accountIdFountain = new AtomicLong();
-    private Map<Long, BankAccount> bankAccountStore;
+    private Map<String, BankAccount> bankAccountStore;
 
     public InMemoryBankAccountRepository() {
         this.bankAccountStore = newHashMap();
@@ -19,13 +21,16 @@ final class InMemoryBankAccountRepository implements Repository<Long, BankAccoun
 
     @Override
     public BankAccount add() {
-        BankAccount account = BankAccount.create(accountIdFountain.incrementAndGet());
-        bankAccountStore.put(account.accountId(), account);
+        BankAccount account = BankAccount.builder()
+                .withAccountId(String.valueOf(accountIdFountain.incrementAndGet()))
+                .withTransactions(ImmutableList.<Transaction>of())
+                .build();
+        bankAccountStore.put(account.getAccountId(), account);
         return account;
     }
 
     @Override
-    public Optional<BankAccount> find(Long id) {
+    public Optional<BankAccount> find(String id) {
         return Optional.fromNullable(bankAccountStore.get(id));
     }
 
@@ -36,11 +41,11 @@ final class InMemoryBankAccountRepository implements Repository<Long, BankAccoun
 
     @Override
     public BankAccount update(BankAccount bankAccount) {
-        return bankAccountStore.put(bankAccount.accountId(), bankAccount);
+        return bankAccountStore.put(bankAccount.getAccountId(), bankAccount);
     }
 
     @Override
-    public BankAccount delete(Long id) {
+    public BankAccount delete(String id) {
         return bankAccountStore.remove(id);
     }
 }
