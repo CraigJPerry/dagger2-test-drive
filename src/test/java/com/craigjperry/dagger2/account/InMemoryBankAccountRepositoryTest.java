@@ -1,6 +1,6 @@
 package com.craigjperry.dagger2.account;
 
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class InMemoryBankAccountRepositoryTest {
     @Test
     public void findReturnsTheLatestVersionOfAnUpdatedAccount() throws Exception {
         BankAccount v1 = bankAccountRepository.add();
-        Transaction t = Transaction.builder().sourceAccount(1234L).destinationAccount(v1.accountId()).amount(100L).build();
+        Transaction t = Transaction.builder().withDestinationAccountCode(v1.accountId().toString()).withAmount(100L).build();
         ImmutableList<Transaction> newTransactions = ImmutableList.<Transaction>builder().addAll(v1.transactions()).add(t).build();
         BankAccount v2 = BankAccount.createWithTransactions(v1.accountId(), newTransactions);
 

@@ -1,6 +1,6 @@
 package com.craigjperry.dagger2.account;
 
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
@@ -25,8 +25,8 @@ public class BankAccountTest {
     @Test
     public void transactionsAreCumulative() throws Exception {
         ImmutableList<Transaction> transactions = ImmutableList.of(
-                Transaction.builder().sourceAccount(4321L).destinationAccount(1234L).amount(10L).build(),
-                Transaction.builder().sourceAccount(4321L).destinationAccount(1234L).amount(-7L).build()
+                Transaction.builder().withDestinationAccountCode("1234").withAmount(10L).build(),
+                Transaction.builder().withDestinationAccountCode("1234").withAmount(-7L).build()
         );
         BankAccount account = BankAccount.createWithTransactions(1234L, transactions);
 
@@ -41,7 +41,7 @@ public class BankAccountTest {
     @Test(expected = IllegalStateException.class)
     public void cannotContainAlienTransactions() throws Exception {
         ImmutableList<Transaction> transactions = ImmutableList.of(
-                Transaction.builder().sourceAccount(4321L).destinationAccount(1234L).amount(10L).build()
+                Transaction.builder().withDestinationAccountCode("1234").withAmount(10L).build()
         );
         BankAccount.createWithTransactions(9999L, transactions);
     }

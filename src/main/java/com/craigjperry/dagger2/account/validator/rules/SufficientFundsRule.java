@@ -2,7 +2,7 @@ package com.craigjperry.dagger2.account.validator.rules;
 
 import com.craigjperry.dagger2.account.BankAccount;
 import com.craigjperry.dagger2.account.validator.error.BankAccountTransactionValidationException;
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 
 public class SufficientFundsRule implements AccountTransactionValidationRule {
 
@@ -13,9 +13,8 @@ public class SufficientFundsRule implements AccountTransactionValidationRule {
     private SufficientFundsRule(){}
 
     @Override
-
     public void validate(BankAccount a, Transaction t) throws BankAccountTransactionValidationException {
-        if (a.getBalance() + t.amount() < 0) {
+        if (a.getBalance() + t.getAmount() < 0) {
             throw new BankAccountTransactionValidationException("Rejecting transaction [%s] to avoid negative balance in account [%s]", t, a);
         }
     }

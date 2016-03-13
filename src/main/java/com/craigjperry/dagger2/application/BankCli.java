@@ -5,7 +5,7 @@ import com.craigjperry.dagger2.account.BankAccountService;
 import com.craigjperry.dagger2.account.DaggerBankAccountServiceComponent;
 import com.craigjperry.dagger2.account.error.BankAccountNotAvailableException;
 import com.craigjperry.dagger2.account.validator.error.BankAccountTransactionValidationException;
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
@@ -38,7 +38,7 @@ public class BankCli {
 
     private void goNuts() throws BankAccountTransactionValidationException, BankAccountNotAvailableException {
         BankAccount bankAccount = bankAccountService.openNewAccount();
-        Transaction add10 = Transaction.builder().sourceAccount(1L).destinationAccount(bankAccount.accountId()).amount(10L).build();
+        Transaction add10 = Transaction.builder().withDestinationAccountCode(bankAccount.accountId().toString()).withAmount(10L).build();
         bankAccountService.appendTransaction(bankAccount.accountId(), add10);
         System.out.println(bankAccount);
         bankAccount = bankAccountService.getAccount(bankAccount.accountId());
@@ -49,9 +49,7 @@ public class BankCli {
         BankCli bankCli = new BankCli();
         try {
             bankCli.goNuts();
-        } catch (BankAccountTransactionValidationException e) {
-            e.printStackTrace();
-        } catch (BankAccountNotAvailableException e) {
+        } catch (BankAccountTransactionValidationException | BankAccountNotAvailableException e) {
             e.printStackTrace();
         }
     }

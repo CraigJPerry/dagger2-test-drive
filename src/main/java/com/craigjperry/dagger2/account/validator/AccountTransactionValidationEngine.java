@@ -3,7 +3,7 @@ package com.craigjperry.dagger2.account.validator;
 import com.craigjperry.dagger2.account.BankAccount;
 import com.craigjperry.dagger2.account.validator.error.BankAccountTransactionValidationException;
 import com.craigjperry.dagger2.account.validator.rules.AccountTransactionValidationRule;
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.craigjperry.dagger2.account;
 
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -20,7 +20,7 @@ public abstract class BankAccount {
         checkArgument(accountId > 0L, "Negative accountId [%s] not permitted", accountId);
         checkNotNull(transactions, "Invalid transactions list");
         for (Transaction transaction : transactions) {
-            checkState(accountId.equals(transaction.sourceAccount()) || accountId.equals(transaction.destinationAccount()),
+            checkState(accountId.equals(Long.valueOf(transaction.getDestinationAccountCode())),
                     "Invalid transaction [%s] doesn't belong to this account [%s]", transaction, accountId);
         }
         return new AutoValue_BankAccount(accountId, transactions);
@@ -40,7 +40,7 @@ public abstract class BankAccount {
     private long sumTotal() {
         long total = 0;
         for (Transaction transaction : transactions()) {
-            total += transaction.amount();
+            total += transaction.getAmount();
         }
         return total;
     }

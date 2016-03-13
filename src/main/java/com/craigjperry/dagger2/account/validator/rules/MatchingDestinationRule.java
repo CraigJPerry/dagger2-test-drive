@@ -2,7 +2,7 @@ package com.craigjperry.dagger2.account.validator.rules;
 
 import com.craigjperry.dagger2.account.BankAccount;
 import com.craigjperry.dagger2.account.validator.error.BankAccountTransactionValidationException;
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 
 public class MatchingDestinationRule implements AccountTransactionValidationRule {
 
@@ -14,7 +14,7 @@ public class MatchingDestinationRule implements AccountTransactionValidationRule
 
     @Override
     public void validate(BankAccount a, Transaction t) throws BankAccountTransactionValidationException {
-        if (a.accountId().equals(t.destinationAccount())) {
+        if (a.accountId().equals(Long.valueOf(t.getDestinationAccountCode()))) {
             return;
         }
         throw new BankAccountTransactionValidationException("Rejecting transaction [%s] not destined for account [%s]", t, a);

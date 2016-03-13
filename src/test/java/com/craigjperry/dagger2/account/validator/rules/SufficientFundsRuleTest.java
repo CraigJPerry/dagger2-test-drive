@@ -1,7 +1,7 @@
 package com.craigjperry.dagger2.account.validator.rules;
 
 import com.craigjperry.dagger2.account.validator.error.BankAccountTransactionValidationException;
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class SufficientFundsRuleTest {
 
     @Test()
     public void permitsNegativeTransactionsWhichResultInPositiveBalance() throws Exception {
-        ImmutableList<Transaction> existingTransactions = existingTransactionsFixtureOf(ImmutableList.<Transaction>of(transactionFixtureOf(10L)));
+        ImmutableList<Transaction> existingTransactions = existingTransactionsFixtureOf(ImmutableList.of(transactionFixtureOf(10L)));
         sufficientFundsRule.validate(bankAccountFixture(1L, existingTransactions), transactionFixtureOf(-9L));
     }
 
@@ -42,6 +42,6 @@ public class SufficientFundsRuleTest {
     }
 
     private Transaction transactionFixtureOf(Long amount) {
-        return Transaction.builder().sourceAccount(1234L).destinationAccount(1L).amount(amount).build();
+        return Transaction.builder().withDestinationAccountCode("1").withAmount(amount).build();
     }
 }

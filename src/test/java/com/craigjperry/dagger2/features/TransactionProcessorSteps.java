@@ -2,7 +2,7 @@ package com.craigjperry.dagger2.features;
 
 import com.craigjperry.dagger2.account.BankAccount;
 import com.craigjperry.dagger2.account.BankAccountService;
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
@@ -33,9 +33,8 @@ public class TransactionProcessorSteps {
             bankAccountService.appendTransaction(
                     bankAccount.accountId(),
                     Transaction.builder()
-                            .sourceAccount(1234L)
-                            .destinationAccount(row.accountId)
-                            .amount(row.balance)
+                            .withDestinationAccountCode(row.accountId.toString())
+                            .withAmount(row.balance)
                             .build()
             );
         }
@@ -53,9 +52,8 @@ public class TransactionProcessorSteps {
             bankAccountService.appendTransaction(
                     row.account,
                     Transaction.builder()
-                            .sourceAccount(1234L)
-                            .destinationAccount(row.account)
-                            .amount(row.amount)
+                            .withDestinationAccountCode(row.account.toString())
+                            .withAmount(row.amount)
                             .build()
             );
         }

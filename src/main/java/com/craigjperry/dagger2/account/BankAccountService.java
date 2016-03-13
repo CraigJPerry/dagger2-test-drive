@@ -1,10 +1,10 @@
 package com.craigjperry.dagger2.account;
 
 import com.craigjperry.dagger2.account.error.BankAccountNotAvailableException;
+import com.craigjperry.dagger2.account.validator.AccountTransactionValidationEngine;
 import com.craigjperry.dagger2.account.validator.error.BankAccountTransactionValidationException;
 import com.craigjperry.dagger2.datastorage.Repository;
-import com.craigjperry.dagger2.account.validator.AccountTransactionValidationEngine;
-import com.craigjperry.dagger2.transaction.Transaction;
+import com.craigjperry.dagger2.entities.Transaction;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
