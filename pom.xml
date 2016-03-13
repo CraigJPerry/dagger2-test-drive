@@ -9,8 +9,10 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.7</java.version>
+        <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <junit.version>4.12</junit.version>
         <cucumber.version>1.2.3</cucumber.version>
         <maven-failsafe-plugin.version>2.19.1</maven-failsafe-plugin.version>
