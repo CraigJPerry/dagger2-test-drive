@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static com.google.common.collect.Maps.newHashMap;
 
 final class InMemoryBankAccountRepository implements Repository<Long, BankAccount> {
-    private static AtomicLong accountIdFountain = new AtomicLong();
+    private AtomicLong accountIdFountain = new AtomicLong();
     private Map<Long, BankAccount> bankAccountStore;
 
     public InMemoryBankAccountRepository() {
