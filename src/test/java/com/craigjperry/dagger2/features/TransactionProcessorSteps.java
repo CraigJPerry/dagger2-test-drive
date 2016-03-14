@@ -1,8 +1,9 @@
 package com.craigjperry.dagger2.features;
 
-import com.craigjperry.dagger2.account.BankAccount;
-import com.craigjperry.dagger2.account.BankAccountService;
-import com.craigjperry.dagger2.entities.Transaction;
+import com.craigjperry.dagger2.entities.account.BankAccount;
+import com.craigjperry.dagger2.entities.transaction.Transaction;
+import com.craigjperry.dagger2.interactors.account.BankAccountService;
+import com.craigjperry.dagger2.interfaceexternal.application.DaggerTestBankComponent;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
@@ -18,7 +19,7 @@ public class TransactionProcessorSteps {
     BankAccountService bankAccountService;
 
     public TransactionProcessorSteps() {
-        DaggerRunAcceptanceIT_TestingBankComponent.create().inject(this);
+        bankAccountService = DaggerTestBankComponent.create().makeTestBankAccountService();
     }
 
     static class BankAccountRow {
